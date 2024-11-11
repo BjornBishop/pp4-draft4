@@ -1,0 +1,31 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <h2 class="mb-4">My Assignments</h2>
+    
+    {% if assignments %}
+        {% for assignment in assignments %}
+            <div class="assignment-card">
+                <h3><a href="{% url 'assignment_detail' assignment.id %}" class="text-decoration-none">{{ assignment.title }}</a></h3>
+                <div class="assignment-meta">
+                    <span class="badge bg-{{ assignment.status|lower }}">{{ assignment.status }}</span>
+                    <span class="ms-2">${{ assignment.budget }}</span>
+                    <span class="ms-2">Posted: {{ assignment.created_at|date:"F j, Y" }}</span>
+                </div>
+                <p class="assignment-description">{{ assignment.description|truncatewords:30 }}</p>
+                <div class="mt-3">
+                    {% if assignment.status == 'OPEN' %}
+                        <form method="post" action="{% url 'close_assignment' assignment.id %}" class="d-inline">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-warning">Close Assignment</button>
+                        </form>
+                    {% endif %}
+                </div>
+            </div>
+        {% endfor %}
+    {% else %}
+        <p class="text-muted">You don't have any assignments yet.</p>
+    {% endif %}
+</div>
+{% endblock %}

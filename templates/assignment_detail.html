@@ -1,0 +1,24 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<div class="container">
+    <div class="assignment-card">
+        <h2 class="assignment-title">{{ assignment.title }}</h2>
+        <div class="assignment-meta">
+            <p><strong>Budget:</strong> ${{ assignment.budget }}</p>
+            <p><strong>Status:</strong> {{ assignment.status }}</p>
+            <p><strong>Posted by:</strong> {{ assignment.client }}</p>
+            <p><strong>Posted on:</strong> {{ assignment.created_at|date:"F j, Y" }}</p>
+        </div>
+        <div class="assignment-description">
+            {{ assignment.description|linebreaks }}
+        </div>
+        {% if user.is_authenticated and user != assignment.client %}
+            <form method="post" action="{% url 'apply_assignment' assignment.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Apply for Assignment</button>
+            </form>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}
